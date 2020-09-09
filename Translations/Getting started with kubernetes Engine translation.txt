@@ -1,0 +1,56 @@
+Welcome to Cloud Shell! Type "help" to get started.
+Your Cloud Platform project in this session is set to qwiklabs-gcp-00-b4ac647a3d85.
+Use “gcloud config set project [PROJECT_ID]” to change to a different project.
+student_00_c72a144040d6@cloudshell:~ (qwiklabs-gcp-00-b4ac647a3d85)$ export MY_ZONE=
+student_00_c72a144040d6@cloudshell:~ (qwiklabs-gcp-00-b4ac647a3d85)$ export MY_ZONE=us-central1-a
+student_00_c72a144040d6@cloudshell:~ (qwiklabs-gcp-00-b4ac647a3d85)$ gcloud container clusters create webfrontend --zone $MY_ZONE --num-nodes 2
+WARNING: Warning: basic authentication is deprecated, and will be removed in GKE control plane versions 1.19 and newer. For a list of recommended authentication methods, see: https://cloud.google.com/kubernetes-engine/docs/how-to/api-server-authentication
+WARNING: Currently VPC-native is not the default mode during cluster creation. In the future, this will become the default mode and can be disabled using `--no-enable-ip-alias` flag. Use `--[no-]enable-ip-alias` flag to suppress this warning.
+WARNING: Newly created clusters and node-pools will have node auto-upgrade enabled by default. This can be disabled using the `--no-enable-autoupgrade` flag.
+WARNING: Starting with version 1.18, clusters will have shielded GKE nodes by default.
+WARNING: Your Pod address range (`--cluster-ipv4-cidr`) can accommodate at most 1008 node(s).
+This will enable the autorepair feature for nodes. Please see https://cloud.google.com/kubernetes-engine/docs/node-auto-repair for more information on node autorepairs.
+Creating cluster webfrontend in us-central1-a... Cluster is being health-checked (master is healthy)...done.
+Created [https://container.googleapis.com/v1/projects/qwiklabs-gcp-00-b4ac647a3d85/zones/us-central1-a/clusters/webfrontend].
+To inspect the contents of your cluster, go to: https://console.cloud.google.com/kubernetes/workload_/gcloud/us-central1-a/webfrontend?project=qwiklabs-gcp-00-b4ac647a3d85
+kubeconfig entry generated for webfrontend.
+NAME         LOCATION       MASTER_VERSION  MASTER_IP      MACHINE_TYPE   NODE_VERSION   NUM_NODES  STATUS
+webfrontend  us-central1-a  1.15.12-gke.2   35.222.17.187  n1-standard-1  1.15.12-gke.2  2          RUNNING
+student_00_c72a144040d6@cloudshell:~ (qwiklabs-gcp-00-b4ac647a3d85)$ kubectl versio
+Error: unknown command "versio" for "kubectl"
+
+Did you mean this?
+        version
+
+Run 'kubectl --help' for usage.
+student_00_c72a144040d6@cloudshell:~ (qwiklabs-gcp-00-b4ac647a3d85)$ kubectl create deploy nginx --image=nginx:1.17.10
+deployment.apps/nginx created
+student_00_c72a144040d6@cloudshell:~ (qwiklabs-gcp-00-b4ac647a3d85)$ kubectl get pods
+NAME                     READY   STATUS    RESTARTS   AGE
+nginx-5f7d5d7689-5dl8r   1/1     Running   0          16s
+student_00_c72a144040d6@cloudshell:~ (qwiklabs-gcp-00-b4ac647a3d85)$ kubectl expose deployment nginx --port 80 --type LoadBalancer
+service/nginx exposed
+student_00_c72a144040d6@cloudshell:~ (qwiklabs-gcp-00-b4ac647a3d85)$ kubectl get services
+NAME         TYPE           CLUSTER-IP    EXTERNAL-IP   PORT(S)        AGE
+kubernetes   ClusterIP      10.51.240.1   <none>        443/TCP        5m7s
+nginx        LoadBalancer   10.51.248.8   <pending>     80:30678/TCP   28s
+student_00_c72a144040d6@cloudshell:~ (qwiklabs-gcp-00-b4ac647a3d85)$ kubectl get services
+NAME         TYPE           CLUSTER-IP    EXTERNAL-IP   PORT(S)        AGE
+kubernetes   ClusterIP      10.51.240.1   <none>        443/TCP        5m21s
+nginx        LoadBalancer   10.51.248.8   <pending>     80:30678/TCP   42s
+student_00_c72a144040d6@cloudshell:~ (qwiklabs-gcp-00-b4ac647a3d85)$ kubectl get services
+NAME         TYPE           CLUSTER-IP    EXTERNAL-IP      PORT(S)        AGE
+kubernetes   ClusterIP      10.51.240.1   <none>           443/TCP        5m44s
+nginx        LoadBalancer   10.51.248.8   34.123.225.223   80:30678/TCP   65s
+student_00_c72a144040d6@cloudshell:~ (qwiklabs-gcp-00-b4ac647a3d85)$ kubectl scale deployment nginx --replicas 3
+deployment.extensions/nginx scaled
+student_00_c72a144040d6@cloudshell:~ (qwiklabs-gcp-00-b4ac647a3d85)$ kubectl get pods
+NAME                     READY   STATUS    RESTARTS   AGE
+nginx-5f7d5d7689-5dl8r   1/1     Running   0          2m32s
+nginx-5f7d5d7689-gvdl9   1/1     Running   0          29s
+nginx-5f7d5d7689-qrvq7   1/1     Running   0          29s
+student_00_c72a144040d6@cloudshell:~ (qwiklabs-gcp-00-b4ac647a3d85)$ kubectl get services
+NAME         TYPE           CLUSTER-IP    EXTERNAL-IP      PORT(S)        AGE
+kubernetes   ClusterIP      10.51.240.1   <none>           443/TCP        6m49s
+nginx        LoadBalancer   10.51.248.8   34.123.225.223   80:30678/TCP   2m10s
+student_00_c72a144040d6@cloudshell:~ (qwiklabs-gcp-00-b4ac647a3d85)$
